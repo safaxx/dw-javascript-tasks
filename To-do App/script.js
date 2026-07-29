@@ -12,39 +12,33 @@ const descriptionInput = document.getElementById("description-input");
 
 const taskData = JSON.parse(localStorage.getItem("tasks")) || [];
 let currentTask = {};
-//1. open the task form on click
-openTaskFormBtn.addEventListener("click", () =>
-{
-    taskForm.classList.toggle("hidden");
-});
 
-//2. close task form
-closeTaskFormBtn.addEventListener("click", () =>
-{
-    taskForm.classList.toggle("hidden");
-})
-
-//store tasks in local storage
-taskForm.addEventListener("submit", (e)=>{
-    e.preventDefault();
-    addOrUpdateTask();
-})
+const removeSpecialChars = (val) => {
+  return val.trim().replace(/[^A-Za-z0-9\-\s]/g, '')
+}
 
 const addOrUpdateTask = () => {
+    if(!titleInput.value.trim()){
+    alert("Please provide a title");
+    return;
+    }
     //need to check if task already exists
     const sameTaskIdx = taskData.findIndex((item)=>item.id===currentTask.id);
-    const taskObj = {
-        id: `${titleInput.value.toLowerCase().split(" ").join("-")}-${Date.now()}`, //tomake id unique
+    let taskObj = {
+        id: `${removeSpecialChars(titleInput.value).trim().toLowerCase().split(" ").join("-")}`,//-${Date.now()}`, //tomake id unique
         title: titleInput.value,
         date: dateInput.value,
         description: descriptionInput.value
     }
+    console.log(taskObj);
     //if not present, add
     if (sameTaskIdx === -1) {
-    taskData.unshift(taskObj);
+        taskData.unshift(taskObj);
+    }else{
+        taskData[sameTaskIdx] = taskObj;
     }
+    localStorage.setItem("tasks", JSON.stringify(taskData));
     updateTaskContainer();
-    //need to clear the task form after add
     resetForm();
 }
 
@@ -58,19 +52,58 @@ const updateTaskContainer = () => {
     <button class="btn" type="button" onClick="editTask(this)">Edit</button>
     <button class="btn" type="button" onClick="deleteTask(this)">Delete</button>
     </div>`
-});
-    
-    
+});    
 }
 
 const resetForm = () => {
-  titleInput.value = "";
-  dateInput.value = "";
-  descriptionInput.value = "";
-  taskForm.classList.toggle("hidden");
-  currentTask = {};
+    addOrUpdateTaskBtn.innerText = "Add Task";
+    titleInput.value = "";
+    dateInput.value = "";
+    descriptionInput.value = "";
+    taskForm.classList.toggle("hidden");
+    currentTask = {};
 }
 
 //edit and delete btn 
+const deleteTask = (btnEle) => {
+    const idx = taskData.findIndex((item) => item.id === btnEle.parentElement.id);
+    //remove from arr
+    taskData.splice(idx, 1);
+    localStorage.setItem("tasks", JSON.stringify(taskData));
+    //remove from display
+    btnEle.parentElement.remove();
 
+}
 
+const editTask = (btnEle) => {
+    const idx = taskData.findIndex((item) => item.id === btnEle.parentElement.id);
+    currentTask = taskData[idx];    
+    titleInput.value = currentTask.title;
+    dateInput.value = currentTask.date;
+    descriptionInput.value = currentTask.description;
+    //title edit disabled so id doesnt change
+    titleInput.disabled = true;
+
+    addOrUpdateTaskBtn.innerText = "Update Task";
+    taskForm.classList.toggle("hidden"); 
+}
+
+//1. open the task form on click
+openTaskFormBtn.addEventListener("click", () =>
+{
+    taskForm.classList.toggle("hidden");
+});
+
+closeTaskFormBtn.addEventListener("click", () =>
+{
+    resetForm();
+})
+
+taskForm.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    addOrUpdateTask();
+})
+
+if(taskData.length){
+    updateTaskContainer();
+}
