@@ -7,6 +7,9 @@ let correctAnswer = "";
 let scoreDisplay = document.getElementById("score");
 let capitals = [];
 let score = 0;
+let rounds = 0;
+const result = document.getElementById("result");
+const maxRounds = 5;
 
 //first fetch the countries from api
 const initialFetch = async () => {
@@ -73,12 +76,35 @@ const checkAnswer = () => {
   if (userAnswer === correctAnswer) { 
     score++;
     scoreDisplay.textContent = score;
+    result.style.color = "green";
+    result.textContent = "Corrent Answer🎉"
+  }else{
+    result.style.color = "red";
+    result.textContent = "Wrong Answer❌"
   }
 }
 
-nextQuestionBtn.addEventListener("click", ()=>{
-    checkAnswer();
+nextQuestionBtn.addEventListener("click", () => {
+  const hasSelectedAnswer = document.querySelector('input[name="choice"]:checked');
+
+  if (!hasSelectedAnswer) {
+    alert("Please choose an answer.");
+    return;
+  }
+
+  checkAnswer();
+  rounds++;
+
+  if (rounds >= maxRounds) {
+    result.style.color = "blue";
+    result.textContent = `Game Over! Your score is ${score}/${maxRounds}`;
+    score = 0;
+    rounds = 0;
+    scoreDisplay.textContent = score;
     displayQuiz();
+  } else {
+    displayQuiz();
+  }
 });
 
 function getRandomInt(max) {
@@ -86,3 +112,6 @@ function getRandomInt(max) {
 }
 
 initialFetch();
+
+//when user does not selcted an option alert is shown and next question
+//comes
