@@ -112,6 +112,3 @@ function getRandomInt(max) {
 }
 
 initialFetch();
-
-//when user does not selcted an option alert is shown and next question
-//comes
