@@ -4,11 +4,13 @@ const answerContainer = document.querySelector(".answers");
 let countryDataArr = [];
 const nextQuestionBtn = document.querySelector("#next-btn");
 let correctAnswer = "";
-let scoreDisplay = document.getElementById("score");
+const scoreDisplay = document.getElementById("score");
+const scoreClass = document.querySelector(".score");
 let capitals = [];
 let score = 0;
 let rounds = 0;
 const result = document.getElementById("result");
+const quizCard = document.querySelector(".quiz-card");
 const maxRounds = 5;
 
 //first fetch the countries from api
@@ -20,15 +22,13 @@ const initialFetch = async () => {
     const result = await response.json();
     countryDataArr = result.data;
     console.log(countryDataArr);
-    capitals = countryDataArr.map(country => country.capital);
+    capitals = countryDataArr.map((country) => country.capital);
     displayQuiz();
   } catch (error) {
     console.log(error);
     quizContainer.innerHTML = "<p>There was an error loading the quiz...</p>";
   }
 };
-
-
 
 const displayQuiz = () => {
   //pick a random country
@@ -49,7 +49,6 @@ const displayQuiz = () => {
   answerContainer.innerHTML = "";
   //display options
   choices.forEach((choice, index) => {
-    
     answerContainer.innerHTML += `
         <div>
             <input type="radio"
@@ -63,7 +62,7 @@ const displayQuiz = () => {
 };
 
 const checkAnswer = () => {
-    //check correct answer
+  //check correct answer
 
   //how to take user input
   const selected = document.querySelector('input[name="choice"]:checked');
@@ -73,19 +72,33 @@ const checkAnswer = () => {
   }
   const userAnswer = selected.value;
 
-  if (userAnswer === correctAnswer) { 
+  if (userAnswer === correctAnswer) {
     score++;
     scoreDisplay.textContent = score;
     result.style.color = "green";
-    result.textContent = "Corrent Answer🎉"
-  }else{
+    result.textContent = "Corrent Answer🎉";
+  } else {
     result.style.color = "red";
-    result.textContent = "Wrong Answer❌"
+    result.textContent = "Wrong Answer❌";
   }
-}
+};
 
 nextQuestionBtn.addEventListener("click", () => {
-  const hasSelectedAnswer = document.querySelector('input[name="choice"]:checked');
+  if (nextQuestionBtn.textContent.trim().toLowerCase() === "play again") {
+    nextQuestionBtn.textContent = "Next Question";
+    quizCard.style.display = "block";
+    scoreClass.style.display = "block";
+    result.textContent = "";
+    score = 0;
+    rounds = 0;
+    scoreDisplay.textContent = score;
+    displayQuiz();
+    return;
+  }
+
+  const hasSelectedAnswer = document.querySelector(
+    'input[name="choice"]:checked',
+  );
 
   if (!hasSelectedAnswer) {
     alert("Please choose an answer.");
@@ -98,10 +111,13 @@ nextQuestionBtn.addEventListener("click", () => {
   if (rounds >= maxRounds) {
     result.style.color = "blue";
     result.textContent = `Game Over! Your score is ${score}/${maxRounds}`;
+    nextQuestionBtn.textContent = "Play Again";
     score = 0;
     rounds = 0;
-    scoreDisplay.textContent = score;
-    displayQuiz();
+    //scoreDisplay.textContent = score;
+    scoreClass.style.display = "none";
+    quizCard.style.display = "none";
+    
   } else {
     displayQuiz();
   }
