@@ -1,10 +1,12 @@
-let countries = [];
-let capitalCities = [];
 const quizContainer = document.querySelector(".quiz-container");
 const countryName = document.querySelector(".country");
 const answerContainer = document.querySelector(".answers");
 let countryDataArr = [];
-const nextQuestionBtn = document.querySelector(".next-btn");
+const nextQuestionBtn = document.querySelector("#next-btn");
+let correctAnswer = "";
+let scoreDisplay = document.getElementById("score");
+let capitals = [];
+let score = 0;
 
 //first fetch the countries from api
 const initialFetch = async () => {
@@ -14,34 +16,37 @@ const initialFetch = async () => {
     );
     const result = await response.json();
     countryDataArr = result.data;
-    //console.log(countryDataArr);
-    displayQuiz(countryDataArr);
+    console.log(countryDataArr);
+    capitals = countryDataArr.map(country => country.capital);
+    displayQuiz();
   } catch (error) {
     console.log(error);
     quizContainer.innerHTML = "<p>There was an error loading the quiz...</p>";
   }
 };
 
-const displayQuiz = (countryDataArr) => {
+
+
+const displayQuiz = () => {
   //pick a random country
   const dataObject = countryDataArr[getRandomInt(countryDataArr.length)];
   const countryQuestion = dataObject.name;
-  const correctAnswer = dataObject.capital;
+  correctAnswer = dataObject.capital;
   countryName.textContent = countryQuestion;
 
   //get 3 other random capitals for option
-  const capitals = countryDataArr.map(country => country.capital);
   let choices = [correctAnswer];
   while (choices.length < 4) {
     const capital = capitals[getRandomInt(capitals.length)];
 
-    if (!choices.includes(capital)) {
+    if (!choices.includes(capital) && capital !== "") {
       choices.push(capital);
     }
   }
+  answerContainer.innerHTML = "";
   //display options
   choices.forEach((choice, index) => {
-    answerContainer.innerHTML = "";
+    
     answerContainer.innerHTML += `
         <div>
             <input type="radio"
@@ -52,7 +57,10 @@ const displayQuiz = (countryDataArr) => {
         </div>
         `;
   });
-  //check correct answer
+};
+
+const checkAnswer = () => {
+    //check correct answer
 
   //how to take user input
   const selected = document.querySelector('input[name="choice"]:checked');
@@ -62,10 +70,16 @@ const displayQuiz = (countryDataArr) => {
   }
   const userAnswer = selected.value;
 
-  if (userAnswer === correctAnswer) {
+  if (userAnswer === correctAnswer) { 
     score++;
+    scoreDisplay.textContent = score;
   }
-};
+}
+
+nextQuestionBtn.addEventListener("click", ()=>{
+    checkAnswer();
+    displayQuiz();
+});
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
