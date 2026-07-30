@@ -4,4 +4,4 @@ I've created these 3 projects as part of the JavaScript Assignment. Each Project
 2. Pomodoro Timer - timer based on the pomodoro technique to have focus sessions
    [App Link](https://dw-to-do-app.netlify.app/)
 3. Quiz App - Simple quiz app which asks questions about countries and its capitals
-   [App Link](https://dw-to-do-app.netlify.app/)
+   [App Link](https://dw-geo-quiz-app.netlify.app/)
