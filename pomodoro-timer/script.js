@@ -6,12 +6,31 @@ const resetBtn = document.getElementById("reset-btn");
 const iconPlay = document.getElementById("icon-play");
 const iconPause = document.getElementById("icon-pause");
 const circleTimer = document.querySelector(".circle-timer");
+const body = document.querySelector(".mode-focus");
 
-const FOCUS_TIME = 25 * 60;
+const FOCUS_TIME = 1 * 60;
 const BREAK_TIME = 5 * 60;
 let isRunning = false;
 let timeLeft = FOCUS_TIME;
 let timerId = null;
+let isBreak = false;
+
+const switchMode = () => {
+  isBreak = !isBreak;
+  if (isBreak) {
+    totalTime = BREAK_TIME;
+    timeLeft = BREAK_TIME;
+    modeLabel.textContent = "Break";
+    body.className = "mode-break";
+    iconPause.style.display = "none";
+    iconPlay.style.display = "block";
+  } else {
+    totalTime = FOCUS_TIME;
+    timeLeft = FOCUS_TIME;
+    modeLabel.textContent = "Focus";
+    body.className = "mode-focus";
+  }
+};
 
 const updateDisplay = () => {
   const minutes = Math.floor(timeLeft / 60);
@@ -35,6 +54,7 @@ const startTimer = () => {
       isRunning = false;
       timerId = null;
       //swtich to break
+      switchMode();
     }
   }, 1000);
 };
