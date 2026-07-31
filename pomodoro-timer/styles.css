@@ -1,0 +1,118 @@
+:root {
+  --bg-color: #2c3e50;
+  --text-color: #ecf0f1;
+  --accent-focus: #e74c3c; /* Red for Focus */
+  --accent-break: #2ecc71; /* Green for Break */
+  --track-color: rgba(255, 255, 255, 0.1);
+  --current-color: var(--accent-focus);
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-color);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+  transition: background-color 0.5s ease;
+}
+
+.container {
+  text-align: center;
+  width: 320px;
+}
+
+/* Circular Timer Styles */
+.circle-timer {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--current-color) 0deg,
+    var(--track-color) 0deg
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 30px auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease;
+}
+
+/* Inner white circle to create the "ring" effect */
+.circle-timer::before {
+  content: "";
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  background-color: var(--bg-color);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.timer-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+#time {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin: 0;
+  font-variant-numeric: tabular-nums; /* Keeps numbers from jumping */
+}
+
+/* Button Controls */
+.btns {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+button {
+  background: none;
+  border: 2px solid var(--text-color);
+  color: var(--text-color);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+button svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+/* Dynamic Classes for JS */
+.mode-break {
+  --current-color: var(--accent-break);
+}
+
+.mode-focus {
+  --current-color: var(--accent-focus);
+}
