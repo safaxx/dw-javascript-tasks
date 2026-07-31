@@ -7,6 +7,7 @@ const iconPlay = document.getElementById("icon-play");
 const iconPause = document.getElementById("icon-pause");
 const circleTimer = document.querySelector(".circle-timer");
 const body = document.querySelector(".mode-focus");
+const messageDisplay = document.querySelector(".session-message");
 
 const FOCUS_TIME = 1 * 60;
 const BREAK_TIME = 5 * 60;
@@ -14,6 +15,19 @@ let isRunning = false;
 let timeLeft = FOCUS_TIME;
 let timerId = null;
 let isBreak = false;
+let totalTime = FOCUS_TIME;
+
+const updateProgress = () => {
+  const progress = (totalTime - timeLeft) / totalTime;
+  const degrees = progress * 360;
+
+  circleTimer.style.background = `
+    conic-gradient(
+      var(--current-color) ${degrees}deg,
+      var(--track-color) ${degrees}deg
+    )
+  `;
+};
 
 const switchMode = () => {
   isBreak = !isBreak;
@@ -37,6 +51,7 @@ const updateDisplay = () => {
   const seconds = timeLeft % 60;
 
   timerDisplay.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  updateProgress();
 };
 
 const startTimer = () => {
@@ -45,11 +60,15 @@ const startTimer = () => {
   isRunning = true;
   iconPause.style.display = "block";
   iconPlay.style.display = "none";
+  messageDisplay.textContent = "";
   timerId = setInterval(() => {
     timeLeft--;
 
     updateDisplay();
     if (timeLeft <= 0) {
+      messageDisplay.textContent =
+        "🎉 Focus session complete! Time for a break.";
+
       clearInterval(timerId);
       isRunning = false;
       timerId = null;
